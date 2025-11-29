@@ -6,6 +6,10 @@ const { Schema, model } = mongoose;
 
 const SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10);
 
+function generateGiftCard() {
+    return 'GC-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+}
+
 const CartItemSchema = new Schema({
     productId: {
         type: Schema.Types.ObjectId,
@@ -20,6 +24,12 @@ const CartItemSchema = new Schema({
     },
 }, { _id: false });
 
+const NotificationSchema = new Schema({
+    message: String,
+    read: { type: Boolean, default: false },
+    createdAt: { type: Date, default: () => new Date() }
+}, { _id: false })
+
 const UserSchema = new Schema({
     name: {
         type: String,
@@ -30,7 +40,6 @@ const UserSchema = new Schema({
     email: {
         type: String,
         required: [true, 'Email is required'],
-        unique: true,
         lowercase: true,
         trim: true,
         validate: {
@@ -51,6 +60,15 @@ const UserSchema = new Schema({
         type: [CartItemSchema],
         default: []
     },
+    giftCard: {
+        type: String,
+        unique: true,
+        default: generateGiftCard
+    },
+    notifications: {
+        type: [NotificationSchema],
+        default: [],
+    }
 }, {
     timestamps: true,
     toJSON: {
@@ -65,23 +83,33 @@ const UserSchema = new Schema({
 
 UserSchema.index({ email: 1 }, { unique: true, collation: { locale: 'en', strength: 2 } });
 
-UserSchema.pre('save', async function (next) {
-    try {
-        if (!this.isModified('passwordHash')) return next();
+UserSchema.pre('save', async function () {
+        if (!this.isModified('passwordHash')) return;
 
         const plain = this.passwordHash;
         const salt = await bcrypt.genSalt(SALT_ROUNDS);
         const hashed = await bcrypt.hash(plain, salt);
         this.passwordHash = hashed;
-
-        return next();
-    } catch (err) {
-        return next(err)
-    }
 });
 
 UserSchema.methods.comparePassword = async function (candidatePassword) {
     return bcrypt.compare(candidatePassword, this.passwordHash);
+};
+
+UserSchema.statics.addNotification = function (userId, message) {
+    return this.findByIdAndUpdate(
+        userId,
+        {
+            $push: {
+                notifications: {
+                    message,
+                    read: false,
+                    createdAt: new Date()
+                }
+            }
+        },
+        { new: true }
+    );
 };
 
 UserSchema.statics.createUser = async function ({ name, email, password, role }) {
@@ -89,6 +117,7 @@ UserSchema.statics.createUser = async function ({ name, email, password, role })
 
     if (!validator.isEmail(email)) throw new Error('Invalid email');
     if (!password || password.length < 6) throw new Error('Password must have at least 6 characters');
+
     const existing = await User.findOne({ email }).collation({ locale: 'en', strength: 2 });
     if (existing) throw new Error('Email already registered');
 
@@ -102,5 +131,6 @@ UserSchema.statics.createUser = async function ({ name, email, password, role })
 
     return user;
 };
+
 
 export default model('User', UserSchema);
