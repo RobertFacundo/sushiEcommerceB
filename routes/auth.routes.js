@@ -11,7 +11,7 @@ router.post('/register', registerLimiter, validate(registerSchema, 'body'), regi
 router.post('/login', loginLimiter, validate(loginSchema, 'body'), login);
 
 router.get('/profile', authMiddleware, profile);
-router.put('/profile', authMiddleware, validate(updateProfileSchema, 'body'), updateProfile);
+router.patch('/profile', authMiddleware, validate(updateProfileSchema, 'body'), updateProfile);
 
 router.post('/notifications', authMiddleware, validate(addNotificationSchema, 'body'), addNotification);
 router.patch('/notifications/:index/read', authMiddleware, validate(markNotificationSchema, 'params'), markNotification);

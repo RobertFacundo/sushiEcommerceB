@@ -23,7 +23,7 @@ export const updateProfileSchema = z.object({
         .max(50)
         .optional()
         .transform(val => val?.trim()), 
-    email:  z.string().email({ pattern: /^[^@\s]+@[^@\s]+\.[^@\s]+$/ }),
+    email:  z.string().email({ pattern: /^[^@\s]+@[^@\s]+\.[^@\s]+$/ }).optional(),
     password: z.string()
         .min(6)
         .optional()
