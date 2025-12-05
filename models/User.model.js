@@ -68,6 +68,10 @@ const UserSchema = new Schema({
     notifications: {
         type: [NotificationSchema],
         default: [],
+    },
+    avatar: {
+        type: String,
+        default: '/avatar.jpg',
     }
 }, {
     timestamps: true,

@@ -47,6 +47,7 @@ export async function updateProfileService(userId, updates) {
     const updateData = {};
 
     if (updates.name) updateData.name = updates.name;
+    if (updates.avatar) updateData.avatar = updates.avatar;
 
     if (updates.email) {
         const existing = await User.findOne({ email: updates.email }).collation({ locale: 'en', strength: 2 });

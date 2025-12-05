@@ -22,11 +22,12 @@ export const updateProfileSchema = z.object({
         .min(2, 'Name must be at least 2 characters')
         .max(50)
         .optional()
-        .transform(val => val?.trim()), 
-    email:  z.string().email({ pattern: /^[^@\s]+@[^@\s]+\.[^@\s]+$/ }).optional(),
+        .transform(val => val?.trim()),
+    email: z.string().email({ pattern: /^[^@\s]+@[^@\s]+\.[^@\s]+$/ }).optional(),
     password: z.string()
         .min(6)
-        .optional()
+        .optional(),
+    avatar: z.string().optional()
 });
 
 export const addNotificationSchema = z.object({
