@@ -86,15 +86,14 @@ export async function addNotificationService(userId, message) {
     return user.notifications;
 }
 
-export async function markNotificationRead(userId, index) {
+export async function markNotificationRead(userId, notificationId) {
     const user = await User.findById(userId);
     if (!user) throw new Error('User not found');
 
-    if (index < 0 || index >= user.notifications.length) {
-        throw new Error('Notification not found');
-    }
+    const noti = user.notifications.id(notificationId);
+    if (!noti) { throw new Error('Notification not found'); }
 
-    user.notifications[index].read = true;
+    noti.read = true;
     await user.save();
 
     return user.notifications;

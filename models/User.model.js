@@ -25,9 +25,19 @@ const CartItemSchema = new Schema({
 }, { _id: false });
 
 const NotificationSchema = new Schema({
+    _id: { type: mongoose.Types.ObjectId, default: () => new mongoose.Types.ObjectId() },
     message: String,
     read: { type: Boolean, default: false },
     createdAt: { type: Date, default: () => new Date() }
+});
+
+const PurchaseItemSchema = new Schema({
+    productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+    name: { type: String, required: true },
+    image: { type: String },
+    price: { type: Number },
+    quantity: { type: Number, default: 1 },
+    purchasedAt: { type: Date, default: () => new Date() },
 }, { _id: false })
 
 const UserSchema = new Schema({
@@ -72,7 +82,8 @@ const UserSchema = new Schema({
     avatar: {
         type: String,
         default: '/avatar.jpg',
-    }
+    },
+    purchaseHistory: { type: [PurchaseItemSchema], default: [] }
 }, {
     timestamps: true,
     toJSON: {
@@ -88,12 +99,12 @@ const UserSchema = new Schema({
 UserSchema.index({ email: 1 }, { unique: true, collation: { locale: 'en', strength: 2 } });
 
 UserSchema.pre('save', async function () {
-        if (!this.isModified('passwordHash')) return;
+    if (!this.isModified('passwordHash')) return;
 
-        const plain = this.passwordHash;
-        const salt = await bcrypt.genSalt(SALT_ROUNDS);
-        const hashed = await bcrypt.hash(plain, salt);
-        this.passwordHash = hashed;
+    const plain = this.passwordHash;
+    const salt = await bcrypt.genSalt(SALT_ROUNDS);
+    const hashed = await bcrypt.hash(plain, salt);
+    this.passwordHash = hashed;
 });
 
 UserSchema.methods.comparePassword = async function (candidatePassword) {
@@ -106,6 +117,7 @@ UserSchema.statics.addNotification = function (userId, message) {
         {
             $push: {
                 notifications: {
+                    _id: new mongoose.Types.ObjectId(),
                     message,
                     read: false,
                     createdAt: new Date()

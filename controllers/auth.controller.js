@@ -79,9 +79,9 @@ export async function addNotification(req, res) {
 export async function markNotification(req, res) {
     try {
         const userId = req.user.id;
-        const { index } = req.params;
+        const { notificationId } = req.params;
 
-        const notifications = await markNotificationRead(userId, index);
+        const notifications = await markNotificationRead(userId, notificationId);
 
         res.status(200).json({
             message: 'Notification marked as read',

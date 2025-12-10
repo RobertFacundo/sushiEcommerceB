@@ -36,8 +36,5 @@ export const addNotificationSchema = z.object({
 });
 
 export const markNotificationSchema = z.object({
-    index: z.preprocess(
-        (val) => Number(val),
-        z.number().int().nonnegative('index must be 0 or greater')
-    )
+    notificationId: z.string().length(24, 'Invalid notificationId')
 })

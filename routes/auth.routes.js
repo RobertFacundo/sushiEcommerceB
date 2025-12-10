@@ -14,6 +14,6 @@ router.get('/profile', authMiddleware, profile);
 router.patch('/profile', authMiddleware, validate(updateProfileSchema, 'body'), updateProfile);
 
 router.post('/notifications', authMiddleware, validate(addNotificationSchema, 'body'), addNotification);
-router.patch('/notifications/:index/read', authMiddleware, validate(markNotificationSchema, 'params'), markNotification);
+router.patch('/notifications/:notificationId/read', authMiddleware, validate(markNotificationSchema, 'params'), markNotification);
 
 export default router;
