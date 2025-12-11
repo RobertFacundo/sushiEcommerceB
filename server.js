@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { connectDB } from './config/connectDB.js';
-import authRoutes from './routes/auth.routes.js'
+import authRoutes from './routes/auth.routes.js';
+import menuRoutes from './features/ourMenu/routes/menu.routes.js'
 
 const app = express();
 
@@ -17,7 +18,8 @@ app.use(cors(
     }
 ));
 
-app.use('/user', authRoutes)
+app.use('/user', authRoutes);
+app.use('/api/menu', menuRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server working! on port=> ${PORT}`);
