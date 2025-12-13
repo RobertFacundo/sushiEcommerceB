@@ -14,10 +14,15 @@ const seedDB = async () => {
         const createdCategories = await Categorymodel.insertMany(categories);
 
         const productsWithCategoryId = products.map(prod => {
-            const category = createdCategories.find(c => c.name === prod.categoryName);
+            const category = createdCategories.find(c => c.name.es === prod.categoryName.es);
+
+            if (!category) {
+                console.error("Category not found for product:", prod.name.es);
+                return null;
+            }
 
             return { ...prod, categoryId: category._id }
-        });
+        }).filter(Boolean);
 
         await ProductModel.insertMany(productsWithCategoryId);
 
