@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path'
 import cors from 'cors';
 import { connectDB } from './config/connectDB.js';
 import authRoutes from './routes/auth.routes.js';
@@ -10,6 +11,10 @@ connectDB();
 
 const PORT = process.env.PORT || 3000;
 
+app.use('/images',
+    express.static(path.join(process.cwd(), 'data/images'))
+)
+
 app.use(express.json());
 app.use(cors(
     {
@@ -17,6 +22,7 @@ app.use(cors(
         credentials: true
     }
 ));
+
 
 app.use('/user', authRoutes);
 app.use('/api/menu', menuRoutes);
