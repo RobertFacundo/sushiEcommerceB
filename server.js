@@ -3,7 +3,8 @@ import path from 'path'
 import cors from 'cors';
 import { connectDB } from './config/connectDB.js';
 import authRoutes from './routes/auth.routes.js';
-import menuRoutes from './features/ourMenu/routes/menu.routes.js'
+import menuRoutes from './features/ourMenu/routes/menu.routes.js';
+import cartRoutes from './features/cart/routes/cart.routes.js'
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(cors(
 
 app.use('/user', authRoutes);
 app.use('/api/menu', menuRoutes);
+app.use('/cart', cartRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server working! on port=> ${PORT}`);

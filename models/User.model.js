@@ -10,20 +10,6 @@ function generateGiftCard() {
     return 'GC-' + Math.random().toString(36).substring(2, 10).toUpperCase();
 }
 
-const CartItemSchema = new Schema({
-    productId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true
-    },
-    quantity: {
-        type: Number,
-        required: true,
-        min: 1,
-        default: 1
-    },
-}, { _id: false });
-
 const NotificationSchema = new Schema({
     _id: { type: mongoose.Types.ObjectId, default: () => new mongoose.Types.ObjectId() },
     message: String,
@@ -65,10 +51,6 @@ const UserSchema = new Schema({
         type: String,
         enum: ['customer', 'admin'],
         default: 'customer'
-    },
-    cart: {
-        type: [CartItemSchema],
-        default: []
     },
     giftCard: {
         type: String,
