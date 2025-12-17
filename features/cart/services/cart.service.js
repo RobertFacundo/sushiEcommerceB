@@ -41,7 +41,7 @@ export async function getCart({ userId = null, cartId = null }) {
 
     await cart.populate({
         path: 'items.productId',
-        select: 'name price image stock'
+        select: 'name price imageUrl stock'
     });
 
     return cart;
