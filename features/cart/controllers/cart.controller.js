@@ -10,6 +10,12 @@ function getCartContext(req) {
 export async function getCart(req, res, next) {
     try {
         const context = getCartContext(req);
+        if (!context.userId && !context.cartId) {
+            return res.status(200).json({
+                items: []
+            });
+        }
+
         const cart = await cartService.getCart(context);
 
         res.status(200).json(cart);

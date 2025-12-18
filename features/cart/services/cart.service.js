@@ -1,11 +1,12 @@
 import CartModel from "../models/Cart.model.js";
+import { v4 as uuidv4 } from 'uuid'
 
 export async function getOrCreateCart({ userId = null, cartId = null }) {
-    if (!userId && !cartId) {
-        throw new Error('Cart context not provided');
-    }
-
     if (userId) {
+        if (cartId) {
+            return await mergeCarts({ userId, cartId });
+        }
+
         let cart = await CartModel.findOne({
             userId,
             status: 'active'
@@ -21,28 +22,40 @@ export async function getOrCreateCart({ userId = null, cartId = null }) {
         return cart;
     }
 
-    let cart = await CartModel.findOne({
-        cartId,
-        status: 'active'
-    });
+    let cart;
+    if (cartId) {
+        cart = await CartModel.findOne({ cartId, status: 'active' });
+    }
 
     if (!cart) {
-        cart = await CartModel.create({
-            cartId,
-            status: 'active'
-        });
+        cart = await CartModel.findOne({ userId: null, status: 'active' })
+    }
+
+    if (!cart) {
+        cartId = cartId || uuidv4();
+        cart = await CartModel.create({ cartId, status: 'active' });
     }
 
     return cart;
 };
 
 export async function getCart({ userId = null, cartId = null }) {
+    if (!userId && !cartId) {
+        return { items: [] };
+    }
     const cart = await getOrCreateCart({ userId, cartId });
 
-    await cart.populate({
-        path: 'items.productId',
-        select: 'name price imageUrl stock'
-    });
+    if (!cart) {
+        console.error('Cart is still null after getOrCreateCart');
+        return { items: [] };  // evita que rompa
+    }
+
+    if (cart.items?.length > 0) {
+        await cart.populate({
+            path: 'items.productId',
+            select: 'name price imageUrl stock'
+        });
+    }
 
     return cart;
 };
@@ -133,9 +146,12 @@ export async function clearCart({ userId = null, cartId = null }) {
 }
 
 export async function mergeCarts({ userId, cartId }) {
-    if (!userId || !cartId) return null;
+    if (!userId) return null;
 
     const userCart = await getOrCreateCart({ userId });
+
+    if (!cartId) return userCart;
+
     const guestCart = await CartModel.findOne({
         cartId,
         status: 'active'
@@ -155,7 +171,10 @@ export async function mergeCarts({ userId, cartId }) {
         if (existingItem) {
             existingItem.quantity += guestItem.quantity;
         } else {
-            userCart.items.push(guestItem);
+            userCart.items.push({
+                productId: guestItem.productId,
+                quantity: guestItem.quantity
+            });
         }
     });
 
@@ -165,5 +184,10 @@ export async function mergeCarts({ userId, cartId }) {
         userCart.save(),
         guestCart.save()
     ]);
+
+    await userCart.populate({
+        path: 'items.productId',
+        select: 'name price imageUrl stock'
+    })
     return userCart;
 }

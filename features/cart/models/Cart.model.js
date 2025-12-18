@@ -30,9 +30,6 @@ const CartSchema = new Schema(
         },
         cartId: {
             type: String,
-            unique: true,
-            sparse: true,
-            index: true
         },
         items: {
             type: [CartItemSchema],
@@ -53,7 +50,7 @@ const CartSchema = new Schema(
 
 CartSchema.index(
     { userId: 1, status: 1 },
-    { unique: true, partialFilterExpression: { status: 'active' } }
+    { unique: true, partialFilterExpression: { status: 'active', userId: { $ne: null } } }
 );
 
 CartSchema.index(
