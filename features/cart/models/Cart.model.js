@@ -49,13 +49,27 @@ const CartSchema = new Schema(
 );
 
 CartSchema.index(
-    { userId: 1, status: 1 },
-    { unique: true, partialFilterExpression: { status: 'active', userId: { $ne: null } } }
+    {
+        userId: 1,
+        status: 1
+    },
+    {
+        unique: true,
+        partialFilterExpression: {
+            status: 'active',
+            userId: { $ne: null }
+        }
+    }
 );
 
 CartSchema.index(
-    { cartId: 1 },
-    { unique: true, sparse: true }
+    {
+        cartId: 1
+    },
+    {
+        unique: true,
+        sparse: true
+    }
 );
 
 export default model('Cart', CartSchema);

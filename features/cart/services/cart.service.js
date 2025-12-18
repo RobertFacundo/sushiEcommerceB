@@ -46,7 +46,7 @@ export async function getCart({ userId = null, cartId = null }) {
     const cart = await getOrCreateCart({ userId, cartId });
 
     if (!cart) {
-        console.error('Cart is still null after getOrCreateCart');
+        console.error('Cart is still null after getOrCreateCart'); 
         return { items: [] };  // evita que rompa
     }
 
