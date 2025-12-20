@@ -11,19 +11,50 @@ function generateGiftCard() {
 }
 
 const NotificationSchema = new Schema({
-    _id: { type: mongoose.Types.ObjectId, default: () => new mongoose.Types.ObjectId() },
+    _id: {
+        type: mongoose.Types.ObjectId,
+        default: () => new mongoose.Types.ObjectId()
+    },
     message: String,
-    read: { type: Boolean, default: false },
-    createdAt: { type: Date, default: () => new Date() }
+    read: {
+        type: Boolean,
+        default: false
+    },
+    createdAt: {
+        type: Date,
+        default: () => new Date()
+    }
 });
 
 const PurchaseItemSchema = new Schema({
-    productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
-    name: { type: String, required: true },
-    image: { type: String },
-    price: { type: Number },
-    quantity: { type: Number, default: 1 },
-    purchasedAt: { type: Date, default: () => new Date() },
+    orderId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Order',
+        required: true
+    },
+    productId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    image: {
+        type: String
+    },
+    price: {
+        type: Number
+    },
+    quantity: {
+        type: Number,
+        default: 1
+    },
+    purchasedAt: {
+        type: Date,
+        default: () => new Date()
+    },
 }, { _id: false })
 
 const UserSchema = new Schema({
