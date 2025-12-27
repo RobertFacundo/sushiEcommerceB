@@ -25,7 +25,7 @@ app.use('/images',
 app.use(express.json());
 app.use(cors(
     {
-        origin: 'https://sushi-ecommerce-f.vercel.app/',
+        origin: 'https://sushi-ecommerce-f.vercel.app',
         credentials: true
     }
 ));
