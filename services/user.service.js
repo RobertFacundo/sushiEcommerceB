@@ -19,7 +19,7 @@ function generateToken(user) {
 }
 
 export async function registerUser({ name, email, password, role }) {
-    console.log('[REGISTER] Creating user');
+    console.log('[REGISTER] Creating user!');
 
     const user = await User.createUser({ name, email, password, role });
 

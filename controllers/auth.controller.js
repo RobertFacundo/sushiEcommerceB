@@ -1,4 +1,4 @@
-import { registerUser, loginUser, getProfile, updateProfileService, addNotificationService, markNotificationRead } from "../services/User.service.js";
+import { registerUser, loginUser, getProfile, updateProfileService, addNotificationService, markNotificationRead } from "../services/user.service.js";
 
 
 export async function register(req, res) {
