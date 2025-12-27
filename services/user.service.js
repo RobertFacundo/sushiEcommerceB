@@ -1,3 +1,4 @@
+import { createGiftcardForUser } from '../features/GiftCards/services/giftCard.service.js';
 import User from '../models/User.model.js';
 import jwt from 'jsonwebtoken';
 
@@ -18,7 +19,16 @@ function generateToken(user) {
 }
 
 export async function registerUser({ name, email, password, role }) {
+    console.log('[REGISTER] Creating user');
+
     const user = await User.createUser({ name, email, password, role });
+
+    console.log('[REGISTER] User created:', user._id.toString());
+
+    const giftCard = await createGiftcardForUser({ userId: user._id });
+
+    console.log('[REGISTER] GiftCard created:', giftCard?._id?.toString());
+
     const token = generateToken(user);
 
     return { user, token };

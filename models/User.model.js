@@ -6,10 +6,6 @@ const { Schema, model } = mongoose;
 
 const SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10);
 
-function generateGiftCard() {
-    return 'GC-' + Math.random().toString(36).substring(2, 10).toUpperCase();
-}
-
 const NotificationSchema = new Schema({
     _id: {
         type: mongoose.Types.ObjectId,
@@ -83,11 +79,6 @@ const UserSchema = new Schema({
         enum: ['customer', 'admin'],
         default: 'customer'
     },
-    giftCard: {
-        type: String,
-        unique: true,
-        default: generateGiftCard
-    },
     notifications: {
         type: [NotificationSchema],
         default: [],
@@ -112,13 +103,12 @@ const UserSchema = new Schema({
 UserSchema.index({ email: 1 }, { unique: true, collation: { locale: 'en', strength: 2 } });
 
 UserSchema.pre('save', async function () {
-    if (!this.isModified('passwordHash')) return;
-
-    const plain = this.passwordHash;
-    const salt = await bcrypt.genSalt(SALT_ROUNDS);
-    const hashed = await bcrypt.hash(plain, salt);
-    this.passwordHash = hashed;
+    if (this.isModified('passwordHash')) {
+        const salt = await bcrypt.genSalt(SALT_ROUNDS);
+        this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
+    }
 });
+
 
 UserSchema.methods.comparePassword = async function (candidatePassword) {
     return bcrypt.compare(candidatePassword, this.passwordHash);

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export default function validateObjectId(paramName) {
+export function validateObjectId(paramName) {
     return (req, res, next) => {
         const id = req.params[paramName];
 
@@ -10,3 +10,4 @@ export default function validateObjectId(paramName) {
         next();
     }
 }
+ 

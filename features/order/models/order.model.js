@@ -13,7 +13,7 @@ const OrderItemSchema = new Schema(
             type: String,
             required: true
         },
-        image: {
+        imageUrl: {
             type: String,
         },
         unitPrice: {
@@ -47,8 +47,7 @@ const OrderSchema = new Schema(
             }
         },
         cartId: {
-            type: Schema.Types.ObjectId,
-            ref: 'Cart',
+            type: String,
             required: true
         },
         items: {
@@ -101,6 +100,10 @@ const OrderSchema = new Schema(
             ],
             default: "pending",
             index: true
+        },
+        paidAt: {
+            type: Date,
+            default: null
         }
     },
     {
