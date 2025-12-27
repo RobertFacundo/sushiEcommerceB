@@ -16,6 +16,10 @@ app.use('/api/webhooks', express.raw({ type: 'application/json' }), stripeWebhoo
 connectDB();
 
 const PORT = process.env.PORT || 3000;
+const allowedOrigins = [
+    'https://sushi-ecommerce-f.vercel.app',
+    'http://localhost:5173'
+];
 
 app.use('/images',
     express.static(path.join(process.cwd(), 'data/images'))
