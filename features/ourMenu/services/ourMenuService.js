@@ -1,4 +1,4 @@
-import Categorymodel from "../../../models/Categorymodel.js";
+import Categorymodel from "../../../models/CategoryModel.js";
 import ProductModel from "../../../models/ProductModel.js";
 
 export const getAllCategories = async () => {
