@@ -92,6 +92,10 @@ export async function mergeCart(req, res, next) {
         const userId = req.user?.id;
         const cartId = req.headers['x-cart-id'];
 
+        if (!cartId) {
+            return res.status(200).json(null);
+        }
+
         const cart = await cartService.mergeCarts({
             userId,
             cartId
