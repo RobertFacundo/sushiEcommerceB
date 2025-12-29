@@ -19,14 +19,17 @@ export async function getOrCreateCart({ userId = null, cartId = null }) {
     }
 
     if (cartId) {
-        let cart = await CartModel.findOne({
-            cartId,
-            status: 'active'
-        });
+        const cart = await CartModel.findOne({ cartId })
+
+        if (cart && cart.status !== 'active') {
+            return await CartModel.create({
+                cartId: uuidv4(),
+                status: 'active'
+            });
+        }
 
         if (cart) return cart;
     }
-    const newCartId = cartId || uuidv4();
 
     return await CartModel.create({
         cartId: newCartId,
@@ -145,8 +148,15 @@ export async function mergeCarts({ userId, cartId }) {
 
     const userCart = await CartModel.findOne({
         userId,
-        status:'active'
+        status: 'active'
     });
+
+    if (!userCart) {
+        userCart = await CartModel.create({
+            userId,
+            status: 'active'
+        });
+    }
 
     const guestCart = await CartModel.findOne({
         cartId,
