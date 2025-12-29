@@ -141,7 +141,7 @@ export async function clearCart({ userId = null, cartId = null }) {
 }
 
 export async function mergeCarts({ userId, cartId }) {
-    if (!userId || cartId) return null;
+    if (!userId || !cartId) return null;
 
     const userCart = await CartModel.findOne({
         userId,
