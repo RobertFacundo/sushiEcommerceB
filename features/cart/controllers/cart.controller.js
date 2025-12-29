@@ -1,6 +1,13 @@
 import * as cartService from '../services/cart.service.js';
 
 function getCartContext(req) {
+
+    if (req.user?.id) {
+        return {
+            userId: req.user.id,
+            cartId: null
+        }
+    }
     return {
         userId: req.user?.id || null,
         cartId: req.headers['x-cart-id'] || null

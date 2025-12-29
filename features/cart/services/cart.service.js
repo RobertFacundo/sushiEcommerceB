@@ -19,16 +19,22 @@ export async function getOrCreateCart({ userId = null, cartId = null }) {
     }
 
     if (cartId) {
-        const cart = await CartModel.findOne({ cartId })
+        let cart = await CartModel.findOne({ cartId })
 
-        if (cart && cart.status !== 'active') {
-            return await CartModel.create({
-                cartId: uuidv4(),
+        if(!cart){
+            cart = await CartModel.create({
+                cartId,
+                status: 'active'
+            })
+        }
+        if (cart.status !== 'active') {
+            cart = await CartModel.create({
+                cartId,
                 status: 'active'
             });
         }
 
-        if (cart) return cart;
+        return cart;
     }
 
     return await CartModel.create({
