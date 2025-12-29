@@ -32,7 +32,7 @@ export async function getOrCreateCart({ userId = null, cartId = null }) {
     }
 
     return await CartModel.create({
-        cartId: newCartId,
+        cartId: uuidv4(),
         status: 'active'
     })
 };
