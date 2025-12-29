@@ -10,6 +10,8 @@ function getCartContext(req) {
 export async function getCart(req, res, next) {
     try {
         const context = getCartContext(req);
+        console.log('[GET CART]', context);
+
         if (!context.userId && !context.cartId) {
             return res.status(200).json({
                 items: []
@@ -17,6 +19,12 @@ export async function getCart(req, res, next) {
         }
 
         const cart = await cartService.getCart(context);
+
+        console.log('[GET CART RESULT]', {
+            cartId: cart.cartId,
+            userId: cart.userId,
+            items: cart.items
+        });
 
         res.status(200).json(cart);
     } catch (error) {
@@ -29,10 +37,23 @@ export async function addItem(req, res, next) {
         const context = getCartContext(req);
         const { productId, quantity } = req.body;
 
+        console.log('[ADD ITEM]', {
+            userId: context.userId,
+            cartId: context.cartId,
+            productId,
+            quantity
+        });
+
         const cart = await cartService.addItemToCart({
             ...context,
             productId,
             quantity
+        });
+
+        console.log('[CART AFTER ADD]', {
+            cartId: cart.cartId,
+            userId: cart.userId,
+            items: cart.items
         });
 
         res.status(200).json(cart);
