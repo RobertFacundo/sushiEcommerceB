@@ -10,29 +10,32 @@ import checkoutRoutes from './routes/checkout.routes.js';
 import giftCardRoutes from './routes/giftCard.routes.js'
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use('/api/webhooks', express.raw({ type: 'application/json' }), stripeWebhookRoutes)
 
 connectDB();
 
-const PORT = process.env.PORT || 3000;
-const allowedOrigins = [
-    'https://sushi-ecommerce-f.vercel.app',
-    'http://localhost:5173'
-];
+app.use(cors(
+    {
+        origin: 'https://sushi-ecommerce-f.vercel.app',
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'x-cart-id'
+        ]
+    }
+));
+
+app.options('*', cors());
+
+app.use(express.json());
 
 app.use('/images',
     express.static(path.join(process.cwd(), 'data/images'))
 )
-
-
-app.use(express.json());
-app.use(cors(
-    {
-        origin: 'https://sushi-ecommerce-f.vercel.app',
-        credentials: true
-    }
-));
 
 
 app.use('/user', authRoutes);
