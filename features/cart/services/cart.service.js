@@ -3,10 +3,6 @@ import { v4 as uuidv4 } from 'uuid'
 
 export async function getOrCreateCart({ userId = null, cartId = null }) {
     if (userId) {
-        if (cartId) {
-            return await mergeCarts({ userId, cartId });
-        }
-
         let cart = await CartModel.findOne({
             userId,
             status: 'active'
@@ -22,21 +18,20 @@ export async function getOrCreateCart({ userId = null, cartId = null }) {
         return cart;
     }
 
-    let cart;
     if (cartId) {
-        cart = await CartModel.findOne({ cartId, status: 'active' });
-    }
+        let cart = await CartModel.findOne({
+            cartId,
+            status: 'active'
+        });
 
-    if (!cart) {
-        cart = await CartModel.findOne({ userId: null, status: 'active' })
+        if (cart) return cart;
     }
+    const newCartId = cartId || uuidv4();
 
-    if (!cart) {
-        cartId = cartId || uuidv4();
-        cart = await CartModel.create({ cartId, status: 'active' });
-    }
-
-    return cart;
+    return await CartModel.create({
+        cartId: newCartId,
+        status: 'active'
+    })
 };
 
 export async function getCart({ userId = null, cartId = null }) {
@@ -46,7 +41,7 @@ export async function getCart({ userId = null, cartId = null }) {
     const cart = await getOrCreateCart({ userId, cartId });
 
     if (!cart) {
-        console.error('Cart is still null after getOrCreateCart'); 
+        console.error('Cart is still null after getOrCreateCart');
         return { items: [] };  // evita que rompa
     }
 
@@ -146,11 +141,12 @@ export async function clearCart({ userId = null, cartId = null }) {
 }
 
 export async function mergeCarts({ userId, cartId }) {
-    if (!userId) return null;
+    if (!userId || cartId) return null;
 
-    const userCart = await getOrCreateCart({ userId });
-
-    if (!cartId) return userCart;
+    const userCart = await CartModel.findOne({
+        userId,
+        status:'active'
+    });
 
     const guestCart = await CartModel.findOne({
         cartId,
