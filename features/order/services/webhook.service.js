@@ -65,6 +65,7 @@ async function handleCheckoutCompleted(session) {
 
     if (order.customer.userId) {
         console.log('🧑‍💻 User ID:', order.customer.userId);
+         console.log('🧑‍💻 order Items:', order.items);
         const purchaseItems = order.items.map(item => ({
             orderId: order._id,
             productId: item.productId,
