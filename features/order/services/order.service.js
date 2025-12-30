@@ -22,7 +22,7 @@ export async function createCheckoutSession({
         return {
             productId: item.productId._id,
             name: item.productId.name.es,
-            image: item.productId.imageUrl,
+            imageUrl: item.productId.imageUrl,
             unitPrice,
             quantity,
             subtotal: unitPrice * quantity

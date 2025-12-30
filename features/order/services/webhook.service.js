@@ -70,7 +70,7 @@ async function handleCheckoutCompleted(session) {
                 orderId: order._id,
                 productId: item.productId,
                 name: item.name,
-                image: item.image,
+                image: item.imageUrl,
                 price: item.unitPrice,
                 quantity: item.quantity,
                 purchasedAt: new Date()
