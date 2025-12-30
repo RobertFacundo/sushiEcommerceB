@@ -63,39 +63,39 @@ async function handleCheckoutCompleted(session) {
         )
     }
 
-    if (order.customer.userId) {
-        console.log('🧑‍💻 User ID:', order.customer.userId);
-         console.log('🧑‍💻 order Items:', order.items);
-        const purchaseItems = order.items.map(item => ({
-            orderId: order._id,
-            productId: item.productId,
-            name: item.name,
-            image: item.imageUrl,
-            price: item.unitPrice,
-            quantity: item.quantity,
-            purchasedAt: new Date()
-        }))
+        if (order.customer.userId) {
+            console.log('🧑‍💻 User ID:', order.customer.userId);
+            console.log('🧑‍💻 order Items:', order.items);
+            const purchaseItems = order.items.map(item => ({
+                orderId: order._id,
+                productId: item.productId,
+                name: item.name,
+                image: item.image,
+                price: item.unitPrice,
+                quantity: item.quantity,
+                purchasedAt: new Date()
+            }))
 
-        console.log('📦 Items to push:', purchaseItems);
+            console.log('📦 Items to push:', purchaseItems);
 
-        await User.updateOne(
-            { _id: order.customer.userId },
-            {
-                $push: {
-                    purchaseHistory: {
-                        $each: purchaseItems
+            await User.updateOne(
+                { _id: order.customer.userId },
+                {
+                    $push: {
+                        purchaseHistory: {
+                            $each: purchaseItems
+                        }
                     }
                 }
-            }
-        );
+            );
 
-        const updatedUser = await User.findById(order.customer.userId);
-        console.log('📊 Updated user purchaseHistory:', updatedUser.purchaseHistory.length);
-        console.log('📬 Updated notifications:', updatedUser.notifications.length);
+            const updatedUser = await User.findById(order.customer.userId);
+            console.log('📊 Updated user purchaseHistory:', updatedUser.purchaseHistory.length);
+            console.log('📬 Updated notifications:', updatedUser.notifications.length);
 
-        await User.addNotification(
-            order.customer.userId,
-            `🧾 Purchase completed successfully. Order #${order._id}`
-        )
-    }
+            await User.addNotification(
+                order.customer.userId,
+                `🧾 Purchase completed successfully. Order #${order._id}`
+            )
+        }
 }

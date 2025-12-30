@@ -28,6 +28,7 @@ export async function createCheckoutSession({
             subtotal: unitPrice * quantity
         };
     });
+    console.log(items, 'LOGDEL ORDERSERVICE!!!!')
     let giftCard = null;
     let coupon = null;
     let stripeDiscounts = [];
