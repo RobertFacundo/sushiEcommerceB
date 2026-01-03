@@ -89,8 +89,8 @@ export async function updateProfileService(userId, updates) {
 
 }
 
-export async function addNotificationService(userId, message) {
-    const user = await User.addNotification(userId, message);
+export async function addNotificationService(userId, type, data = {}) {
+    const user = await User.addNotification(userId, type, data);
     if (!user) throw new Error('User not found')
 
     return user.notifications;

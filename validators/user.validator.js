@@ -31,8 +31,8 @@ export const updateProfileSchema = z.object({
 });
 
 export const addNotificationSchema = z.object({
-    message: z.string()
-        .min(1, 'message cannot be empty')
+    type: z.string().min(1),
+    data: z.record(z.any()).optional()
 });
 
 export const markNotificationSchema = z.object({

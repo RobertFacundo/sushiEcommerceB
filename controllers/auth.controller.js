@@ -63,9 +63,9 @@ export async function updateProfile(req, res) {
 export async function addNotification(req, res) {
     try {
         const userId = req.user.id;
-        const { message } = req.body;
+        const { type, data } = req.body;
 
-        const notifications = await addNotificationService(userId, message);
+        const notifications = await addNotificationService(userId, type, data);
 
         res.status(200).json({
             message: 'Notification added',

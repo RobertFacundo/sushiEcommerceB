@@ -11,7 +11,14 @@ const NotificationSchema = new Schema({
         type: mongoose.Types.ObjectId,
         default: () => new mongoose.Types.ObjectId()
     },
-    message: String,
+    type: {
+        type: String,
+        required: true
+    },
+    data: {
+        type: Object,
+        default: {}
+    },
     read: {
         type: Boolean,
         default: false
@@ -114,14 +121,15 @@ UserSchema.methods.comparePassword = async function (candidatePassword) {
     return bcrypt.compare(candidatePassword, this.passwordHash);
 };
 
-UserSchema.statics.addNotification = function (userId, message) {
+UserSchema.statics.addNotification = function (userId, type, data = {}) {
     return this.findByIdAndUpdate(
         userId,
         {
             $push: {
                 notifications: {
                     _id: new mongoose.Types.ObjectId(),
-                    message,
+                    type,
+                    data,
                     read: false,
                     createdAt: new Date()
                 }
