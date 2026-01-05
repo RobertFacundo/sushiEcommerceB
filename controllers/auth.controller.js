@@ -62,6 +62,9 @@ export async function updateProfile(req, res) {
 
 export async function addNotification(req, res) {
     try {
+        console.log('USER:', req.user);
+        console.log('BODY:', req.body);
+
         const userId = req.user.id;
         const { type, data } = req.body;
 
@@ -72,6 +75,7 @@ export async function addNotification(req, res) {
             notifications
         });
     } catch (error) {
+        console.error('ADD NOTIFICATION ERROR:', error);
         res.status(400).json({ error: error.message });
     }
 }

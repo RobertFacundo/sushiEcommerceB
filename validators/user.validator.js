@@ -32,7 +32,7 @@ export const updateProfileSchema = z.object({
 
 export const addNotificationSchema = z.object({
     type: z.string().min(1),
-    data: z.record(z.any()).optional()
+    data: z.object({}).passthrough().optional()
 });
 
 export const markNotificationSchema = z.object({
