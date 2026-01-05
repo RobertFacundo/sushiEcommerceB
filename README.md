@@ -56,7 +56,7 @@ Each domain (auth, menu, cart, checkout, gift cards) is isolated within its own 
 ## 📂 Folder Structure (Simplified)
 
 <p align="center">
-  <img src="./docs/folderStructure.png" alt="Folder structure" width="600" />
+  <img src="./docs/folder.png" alt="Folder structure" width="600" />
 </p>
 ---
 
