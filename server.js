@@ -44,6 +44,10 @@ app.use('/cart', cartRoutes);
 app.use('/api/orders', checkoutRoutes);
 app.use('/api/giftcards', giftCardRoutes);
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
+})
+
 app.listen(PORT, () => {
     console.log(`Server working! on port=> ${PORT}`);
 });
